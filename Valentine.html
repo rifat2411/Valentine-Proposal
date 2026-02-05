@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Proposal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffafbd; /* Closer to the soft pink in the pic */
+            background-image: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* The white card from the screenshot */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            z-index: 10;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .emoji-header {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            font-size: 1.1em;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        #yes {
+            background-color: #d61a5e;
+            color: white;
+            box-shadow: 0 4px 15px rgba(214, 26, 94, 0.4);
+        }
+
+        #no {
+            background-color: #e0e0e0;
+            color: #666;
+        }
+
+        .shy-text {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        /* Congratulations Page Styles */
+        .congrats-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .congrats-text b {
+            color: #000;
+            display: block;
+            font-size: 1.3em;
+            margin: 10px 0;
+        }
+
+        /* Floating Hearts Background Decor */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.5);
+            user-select: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-heart" style="top: 10%; left: 10%;">❤</div>
+    <div class="bg-heart" style="bottom: 20%; right: 15%;">❤</div>
+    <div class="bg-heart" style="bottom: 10%; left: 30%;">❤</div>
+
+    <div class="card">
+        <div id="page1" class="page active">
+            <div class="emoji-header">🐱💜</div>
+            <div class="message">Will you be my Valentine?</div>
+            <div class="buttons">
+                <button id="yes">Yes 💞</button>
+                <button id="no">No</button>
+            </div>
+            <div class="shy-text">(No is a little shy 😈)</div>
+        </div>
+
+        <div id="page2" class="page">
+            <div class="emoji-header">🤗🌸💕</div>
+            <div class="congrats-text">
+                <b>Yay! She said YES 💞</b>
+                Congratulations AREEHA!<br>
+                This moment just became a beautiful memory ✨<br><br>
+                You are my today, my tomorrow, and my forever.<br>
+                Thank you for being my wife,<br>
+                my love, my best friend.<br><br>
+                I love you endlessly ❤️💖
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const yesBtn = document.getElementById('yes');
+        const noBtn = document.getElementById('no');
+
+        yesBtn.addEventListener('click', () => {
+            page1.classList.remove('active');
+            page2.classList.add('active');
+            document.body.style.backgroundColor = "#ff4d6d"; // Darker pink on success
+        });
+
+        noBtn.addEventListener('mouseover', () => {
+            // Move on hover makes it harder to click than just on click!
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+            
+            // Generate random positions
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        });
+    </script>
+</body>
+</html>
