@@ -7,8 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffafbd; /* Closer to the soft pink in the pic */
-            background-image: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
+            background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
             margin: 0;
             display: flex;
             justify-content: center;
@@ -17,7 +16,6 @@
             overflow: hidden;
         }
 
-        /* The white card from the screenshot */
         .card {
             background: rgba(255, 255, 255, 0.9);
             padding: 40px;
@@ -32,25 +30,10 @@
         .page { display: none; }
         .page.active { display: block; }
 
-        .emoji-header {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
+        .emoji-header { font-size: 50px; margin-bottom: 10px; }
+        .message { font-size: 1.8em; font-weight: bold; color: #333; margin-bottom: 25px; }
 
-        .message {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 25px;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px; }
 
         button {
             font-size: 1.1em;
@@ -62,51 +45,30 @@
             transition: transform 0.2s;
         }
 
-        #yes {
-            background-color: #d61a5e;
-            color: white;
-            box-shadow: 0 4px 15px rgba(214, 26, 94, 0.4);
-        }
+        #yes { background-color: #d61a5e; color: white; box-shadow: 0 4px 15px rgba(214, 26, 94, 0.4); }
+        #no { background-color: #e0e0e0; color: #666; transition: all 0.3s ease; }
 
-        #no {
-            background-color: #e0e0e0;
-            color: #666;
-        }
+        .shy-text { font-size: 0.85em; color: #555; margin-top: 10px; }
 
-        .shy-text {
-            font-size: 0.85em;
-            color: #555;
-            margin-top: 10px;
-        }
+        .congrats-text { font-size: 1.1em; line-height: 1.6; color: #444; }
+        .congrats-text b { color: #000; display: block; font-size: 1.3em; margin: 10px 0; }
 
-        /* Congratulations Page Styles */
-        .congrats-text {
-            font-size: 1.1em;
-            line-height: 1.6;
-            color: #444;
-        }
-
-        .congrats-text b {
-            color: #000;
-            display: block;
-            font-size: 1.3em;
-            margin: 10px 0;
-        }
-
-        /* Floating Hearts Background Decor */
-        .bg-heart {
+        /* Heart Animation */
+        .falling-heart {
             position: absolute;
-            color: rgba(255, 255, 255, 0.5);
+            top: -10%;
+            color: #ff4d6d;
+            font-size: 20px;
             user-select: none;
-            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
-
-    <div class="bg-heart" style="top: 10%; left: 10%;">❤</div>
-    <div class="bg-heart" style="bottom: 20%; right: 15%;">❤</div>
-    <div class="bg-heart" style="bottom: 10%; left: 30%;">❤</div>
 
     <div class="card">
         <div id="page1" class="page active">
@@ -139,18 +101,30 @@
         const yesBtn = document.getElementById('yes');
         const noBtn = document.getElementById('no');
 
+        // Function to create falling hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('falling-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            heart.style.opacity = Math.random();
+            document.body.appendChild(heart);
+
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+
         yesBtn.addEventListener('click', () => {
             page1.classList.remove('active');
             page2.classList.add('active');
-            document.body.style.backgroundColor = "#ff4d6d"; // Darker pink on success
+            document.body.style.backgroundColor = "#ff4d6d";
+            // Start heart shower
+            setInterval(createHeart, 300);
         });
 
         noBtn.addEventListener('mouseover', () => {
-            // Move on hover makes it harder to click than just on click!
             const maxX = window.innerWidth - noBtn.offsetWidth;
             const maxY = window.innerHeight - noBtn.offsetHeight;
-            
-            // Generate random positions
             const randomX = Math.floor(Math.random() * maxX);
             const randomY = Math.floor(Math.random() * maxY);
 
