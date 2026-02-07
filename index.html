@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            transition: background-color 0.5s ease;
         }
 
         .card {
@@ -33,7 +34,26 @@
         .emoji-header { font-size: 50px; margin-bottom: 10px; }
         .message { font-size: 1.8em; font-weight: bold; color: #333; margin-bottom: 25px; }
 
-        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 15px; }
+        input[type="text"] {
+            padding: 12px 20px;
+            width: 80%;
+            border-radius: 25px;
+            border: 2px solid #ff4d6d;
+            margin-bottom: 20px;
+            font-size: 1em;
+            text-align: center;
+            outline: none;
+        }
+
+        .buttons { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 15px;
+            position: relative;
+            height: 60px; 
+        }
 
         button {
             font-size: 1.1em;
@@ -43,24 +63,31 @@
             cursor: pointer;
             font-weight: 600;
             transition: transform 0.2s;
+            white-space: nowrap;
         }
 
-        #yes { background-color: #d61a5e; color: white; box-shadow: 0 4px 15px rgba(214, 26, 94, 0.4); }
-        #no { background-color: #e0e0e0; color: #666; transition: all 0.3s ease; }
+        #start-btn, #yes { background-color: #d61a5e; color: white; box-shadow: 0 4px 15px rgba(214, 26, 94, 0.4); }
+        #no { 
+            background-color: #e0e0e0; 
+            color: #666; 
+            position: relative;
+            transition: all 0.2s ease;
+        }
 
         .shy-text { font-size: 0.85em; color: #555; margin-top: 10px; }
-
         .congrats-text { font-size: 1.1em; line-height: 1.6; color: #444; }
         .congrats-text b { color: #000; display: block; font-size: 1.3em; margin: 10px 0; }
 
-        /* Heart Animation */
+        /* IMPROVED HEART ANIMATION */
         .falling-heart {
             position: absolute;
             top: -10%;
-            color: #ff4d6d;
-            font-size: 20px;
+            font-size: 24px;
             user-select: none;
             animation: fall linear forwards;
+            /* Added white glow so they are visible on dark pink */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); 
+            z-index: 5;
         }
 
         @keyframes fall {
@@ -71,7 +98,14 @@
 <body>
 
     <div class="card">
-        <div id="page1" class="page active">
+        <div id="page0" class="page active">
+            <div class="emoji-header">💝</div>
+            <input type="text" id="nameInput" placeholder="Enter your name..." autocomplete="off">
+            <br>
+            <button id="start-btn">Continue</button>
+        </div>
+
+        <div id="page1" class="page">
             <div class="emoji-header">🐱💜</div>
             <div class="message">Will you be my Valentine?</div>
             <div class="buttons">
@@ -85,7 +119,7 @@
             <div class="emoji-header">🤗🌸💕</div>
             <div class="congrats-text">
                 <b>Yay! She said YES 💞</b>
-                Congratulations AREEHA!<br>
+                Congratulations <span id="display-name">NAME</span>!<br>
                 This moment just became a beautiful memory ✨<br><br>
                 You are my today, my tomorrow, and my forever.<br>
                 Thank you for being my wife,<br>
@@ -96,41 +130,65 @@
     </div>
 
     <script>
+        const page0 = document.getElementById('page0');
         const page1 = document.getElementById('page1');
         const page2 = document.getElementById('page2');
+        const startBtn = document.getElementById('start-btn');
         const yesBtn = document.getElementById('yes');
         const noBtn = document.getElementById('no');
+        const nameInput = document.getElementById('nameInput');
+        const displayName = document.getElementById('display-name');
 
-        // Function to create falling hearts
+        startBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if (name !== "") {
+                displayName.innerText = name.toUpperCase();
+                page0.classList.remove('active');
+                page1.classList.add('active');
+            } else {
+                alert("Please enter a name to continue! ❤️");
+            }
+        });
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('falling-heart');
-            heart.innerHTML = '❤️';
+            
+            // Randomly pick between different heart colors/emojis
+            const types = ['🤍', '💖', '✨', '❤️', '🌸'];
+            heart.innerHTML = types[Math.floor(Math.random() * types.length)];
+            
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-            heart.style.opacity = Math.random();
+            heart.style.opacity = Math.random() * 0.5 + 0.5; // Ensure they aren't too transparent
+            heart.style.fontSize = Math.random() * 10 + 20 + 'px'; // Random sizes
+            
             document.body.appendChild(heart);
-
             setTimeout(() => { heart.remove(); }, 5000);
         }
 
         yesBtn.addEventListener('click', () => {
             page1.classList.remove('active');
             page2.classList.add('active');
-            document.body.style.backgroundColor = "#ff4d6d";
-            // Start heart shower
-            setInterval(createHeart, 300);
+            document.body.style.backgroundColor = "#ff4d6d"; 
+            setInterval(createHeart, 200); // Slightly faster for more "magic"
         });
 
-        noBtn.addEventListener('mouseover', () => {
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+        noBtn.addEventListener('mouseenter', () => {
+            const padding = 20;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
 
             noBtn.style.position = 'fixed';
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
+            noBtn.style.zIndex = '999';
+        });
+
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') startBtn.click();
         });
     </script>
 </body>
